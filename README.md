@@ -1,69 +1,40 @@
-# React + TypeScript + Vite
+# Project Bragi
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Project Bragi is a web-based interactive story and scene editor, allowing authors to create, save, and visually edit narrative scenarios.
 
-Currently, two official plugins are available:
+## Features
+- Create and save new scenarios via a JSON-based REST API
+- Edit scenario details in a dedicated scene editor interface (WIP)
+- Built with React, Vite, Tailwind CSS, Express, and Three.js
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Prerequisites
+- Node.js (>= 14.x)
+- npm (>= 6.x)
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Installation
+Clone the repository and install dependencies:
+```bash
+git clone <repository-url>
+cd editor-braggi
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Running the Application
+Start the backend server (for saving scenarios):
+```bash
+npm run start:server
 ```
+In a separate terminal, start the frontend development server:
+```bash
+npm run dev
+```
+Open your browser at `http://localhost:5173` to access the app.
+
+## Building for Production
+```bash
+npm run build
+npm run preview
+```
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

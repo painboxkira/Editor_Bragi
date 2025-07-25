@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { Sparkles, Plus, Check, AlertCircle } from 'lucide-react';
 
@@ -9,10 +10,11 @@ const Scenario = () => {
   const [scenarName, setScenarName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const navigate = useNavigate();
   const handleSave = async () => {
     setError(null);
     setSuccess(false);
-    
+
     if (scenarName.trim() === "") {
       setError("Scenario name cannot be empty.");
       return;
@@ -43,9 +45,10 @@ const Scenario = () => {
         } catch {}
         throw new Error(message);
       }
+      const result = await response.json();
       setSuccess(true);
       setScenarName("");
-      window.location.href = './sceneEditor';
+      navigate('/sceneEditor', { state: { scenario: result.data } });
     } catch (err: any) {
       setError(err.message || "An error occurred.");
     }
