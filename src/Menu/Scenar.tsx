@@ -6,11 +6,32 @@ import { Sparkles, Plus, Check, AlertCircle } from 'lucide-react';
 const bgImage = './bgfont2.jpg';
 const logoImage = './logo.jpg';
 
+interface ScenarioData {
+  id: string;
+  name: string;
+  createdAt: string;
+  [key: string]: any;
+}
+
 const Scenario = () => {
   const [scenarName, setScenarName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [savedScenarios, setSavedScenarios] = React.useState<ScenarioData[]>([]);
+
+  React.useEffect(() => {
+    // Load existing scenarios from server
+    fetch('http://localhost:3000/api/scenarios')
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.success && Array.isArray(result.data)) {
+          setSavedScenarios(result.data);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
   const handleSave = async () => {
     setError(null);
     setSuccess(false);
@@ -51,7 +72,7 @@ const Scenario = () => {
       navigate('/sceneEditor', { state: { scenario: result.data } });
     } catch (err: any) {
       setError(err.message || "An error occurred.");
-    }
+  }
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,6 +174,27 @@ const Scenario = () => {
             bg-gradient-to-r from-pink-100 via-yellow-200 to-blue-300 bg-clip-text text-transparent animate-gradient-psy drop-shadow-[0_1px_7px_rgba(14,0,80,0.10)] uppercase">
             Ready to craft your next masterpiece?
           </p>
+        </div>
+        {/* Existing scenarios loader */}
+        <div className="mt-6 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-4">
+          <h2 className="text-2xl font-bold mb-3 text-center">Load Existing Scenario</h2>
+          {savedScenarios.length === 0 ? (
+            <p className="text-center text-sm">No scenarios found.</p>
+          ) : (
+            <ul className="space-y-2">
+              {savedScenarios.map((sc) => (
+                <li key={sc.id} className="flex justify-between items-center p-2 bg-white/10 rounded">
+                  <span>{sc.name}</span>
+                  <button
+                    className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+                    onClick={() => navigate('/sceneEditor', { state: { scenario: sc } })}
+                  >
+                    Edit
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       <style>

@@ -1,0 +1,13 @@
+{
+  "id": "f611749a-66fd-41d0-9972-ae1010b6e439",
+  "name": "newScenar",
+  "createdAt": "2025-07-25T18:10:09.554Z",
+  "scenes": [
+    {
+      "id": "6adbfb2f-6640-4fc7-863e-25fcb195a53a",
+      "name": "Test",
+      "type": "panoramic",
+      "imageName": "new_scene.jpg"
+    }
+  ]
+}

@@ -20,6 +20,12 @@ const PORT = 3000;
 // Without this, `req.body` would be undefined.
 app.use(express.json());
 
+// Ensure a directory exists for storing scenario JSON files
+const scenariosDir = path.join(__dirname, 'scenarios');
+if (!fs.existsSync(scenariosDir)) {
+  fs.mkdirSync(scenariosDir, { recursive: true });
+}
+
 // --- API Route ---
 /**
  * @route   POST /api/savejson
@@ -42,7 +48,7 @@ app.post('/api/savejson', (req, res) => {
 
   // Define the path where the file will be saved.
   // We'll save it as 'data.json' in the same directory as the script.
-  const filePath = path.join(__dirname, 'data.json');
+  const filePath = path.join(scenariosDir, `${dataToSave.id}.json`);
 
   // Convert the JavaScript object back into a formatted JSON string.
   // The `null, 2` arguments make the saved JSON file human-readable (pretty-printed).
@@ -73,4 +79,30 @@ app.post('/api/savejson', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log('Waiting for POST requests to /api/savejson...');
+});
+
+/**
+ * @route   GET /api/scenarios
+ * @desc    Returns a list of all saved scenario JSON files
+ */
+app.get('/api/scenarios', (req, res) => {
+  fs.readdir(scenariosDir, (err, files) => {
+    if (err) {
+      console.error('Error reading scenarios directory:', err);
+      return res.status(500).json({ success: false, message: 'Failed to list scenarios.' });
+    }
+    const scenarios = files
+      .filter((f) => f.endsWith('.json'))
+      .map((file) => {
+        try {
+          const content = fs.readFileSync(path.join(scenariosDir, file), 'utf8');
+          return JSON.parse(content);
+        } catch (e) {
+          console.error('Error parsing scenario file', file, e);
+          return null;
+        }
+      })
+      .filter((s) => s !== null);
+    res.json({ success: true, data: scenarios });
+  });
 });

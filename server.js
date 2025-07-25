@@ -14,6 +14,38 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+// Ensure a directory exists for storing scenario JSON files
+const scenariosDir = path.join(__dirname, 'scenarios');
+if (!fs.existsSync(scenariosDir)) {
+  fs.mkdirSync(scenariosDir, { recursive: true });
+}
+
+/**
+ * @route   GET /api/scenarios
+ * @desc    Returns a list of all saved scenario JSON files
+ */
+app.get('/api/scenarios', (req, res) => {
+  fs.readdir(scenariosDir, (err, files) => {
+    if (err) {
+      console.error('Error reading scenarios directory:', err);
+      return res.status(500).json({ success: false, message: 'Failed to list scenarios.' });
+    }
+    const scenarios = files
+      .filter((f) => f.endsWith('.json'))
+      .map((file) => {
+        try {
+          const content = fs.readFileSync(path.join(scenariosDir, file), 'utf8');
+          return JSON.parse(content);
+        } catch (e) {
+          console.error('Error parsing scenario file', file, e);
+          return null;
+        }
+      })
+      .filter((s) => s !== null);
+    res.json({ success: true, data: scenarios });
+  });
+});
+
 app.post('/api/savejson', (req, res) => {
   console.log('Received request on /api/savejson');
   const dataToSave = req.body;
@@ -25,7 +57,8 @@ app.post('/api/savejson', (req, res) => {
     });
   }
 
-  const filePath = path.join(__dirname, 'data.json');
+  // Save each scenario as its own JSON file by ID
+  const filePath = path.join(scenariosDir, `${dataToSave.id}.json`);
   const jsonString = JSON.stringify(dataToSave, null, 2);
 
   fs.writeFile(filePath, jsonString, 'utf8', (err) => {
